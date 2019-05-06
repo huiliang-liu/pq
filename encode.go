@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lib/pq/oid"
+	"github.com/greenplum-db/pq/oid"
 )
 
 func binaryEncode(parameterStatus *parameterStatus, x interface{}) []byte {

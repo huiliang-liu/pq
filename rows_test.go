@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/lib/pq/oid"
+	"github.com/greenplum-db/pq/oid"
 )
 
 func TestDataTypeName(t *testing.T) {

@@ -7,7 +7,7 @@ using this package directly. For example:
 	import (
 		"database/sql"
 
-		_ "github.com/lib/pq"
+		_ "github.com/greenplum-db/pq"
 	)
 
 	func main() {

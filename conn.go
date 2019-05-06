@@ -21,8 +21,8 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/lib/pq/oid"
-	"github.com/lib/pq/scram"
+	"github.com/greenplum-db/pq/oid"
+	"github.com/greenplum-db/pq/scram"
 )
 
 // Common error types
