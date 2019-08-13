@@ -5,7 +5,7 @@ package pq
 import (
 	"fmt"
 
-	"github.com/apcera/gssapi"
+	"github.com/greenplum-db/gssapi"
 )
 
 type gssctx struct {

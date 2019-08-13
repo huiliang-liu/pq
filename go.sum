@@ -1,2 +1,2 @@
-github.com/apcera/gssapi v0.0.0-20161010215902-5fb4217df13b h1:7RAHU53htlDwWxQBU5WbFQFx5OJni0TRi+aPd4tgDDg=
-github.com/apcera/gssapi v0.0.0-20161010215902-5fb4217df13b/go.mod h1:mHKqXSiMGpIEBD9TKS/fy5tazAAaLx28fC/VTaG+kgs=
+github.com/greenplum-db/gssapi v0.0.0-20190813081833-14bfdd606422 h1:FIqqCIYFpyPjVnhohR2WZERyZAFLmk4Sk/iK59QjuMQ=
+github.com/greenplum-db/gssapi v0.0.0-20190813081833-14bfdd606422/go.mod h1:OHM1jDPSLoqBMJ/j4OyKDqt8dv0sOqWYVZbAfKz47qM=
