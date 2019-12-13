@@ -20,10 +20,26 @@ type gssctx struct {
 	goutbuf    *gssapi.Buffer
 }
 
+type stdoutPrinter struct{}
+
+func (sp *stdoutPrinter) Print(a ...interface{}) {
+	fmt.Println(a...)
+}
+
 func (cn *conn) gss(o values) {
 	cn.krbsrvname = o["krbsrvname"]
 	cn.pghost = o["host"]
 	opt := &gssapi.Options{LoadDefault: gssapi.MIT}
+	dbg, ok := o["gssdebug"]
+	if ok && dbg == "true" {
+		printers := make([]gssapi.Printer, gssapi.MaxSeverity)
+		for i := range printers {
+			printers[i] = &stdoutPrinter{}
+		}
+		opt.Printers = printers
+		fmt.Println("Printers:", len(opt.Printers))
+		delete(o, "gssdebug")
+	}
 	var err error
 	cn.gsslib, err = gssapi.Load(opt)
 	if err != nil {
