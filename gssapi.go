@@ -29,14 +29,14 @@ func dbglog(a ...interface{}) {
 	}
 }
 
-func dbgdump(f string, a interface{}) {
+func dbgdump(f string, a interface{}) error {
 	file, err := os.Create(f)
 	if err != nil {
-		dbglog(err)
-		return
+		return err
 	}
 	defer file.Close()
 	fmt.Fprintln(file, a)
+	return nil
 }
 
 func (cn *conn) gss(o values) {
@@ -108,7 +108,12 @@ func (cn *conn) gssContinue() {
 		inbuf)
 	dbglog("cn.gsslib.InitSecContext:", cn.gctx, err)
 	if cn.goutbuf != nil {
-		dbgdump("goutbuf.bin", cn.goutbuf)
+		err = dbgdump("goutbuf.bin", cn.goutbuf)
+		if err == nil {
+			dbglog("cn.goutbuf dumped to goutbuf.bin")
+		} else {
+			dbglog(err)
+		}
 	}
 	if cn.gctx != cn.gsslib.GSS_C_NO_CONTEXT {
 		cn.ginbuf.Release()
