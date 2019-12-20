@@ -20,10 +20,12 @@ type gssctx struct {
 	goutbuf    *gssapi.Buffer
 }
 
-type stdoutPrinter struct{}
+var dbgLogEnabled bool = false
 
-func (sp *stdoutPrinter) Print(a ...interface{}) {
-	fmt.Println(a...)
+func dbglog(a ...interface{}) {
+	if dbgLogEnabled {
+		fmt.Println(a...)
+	}
 }
 
 func (cn *conn) gss(o values) {
@@ -32,12 +34,7 @@ func (cn *conn) gss(o values) {
 	opt := &gssapi.Options{LoadDefault: gssapi.MIT}
 	dbg, ok := o["gssdebug"]
 	if ok && dbg == "true" {
-		printers := make([]gssapi.Printer, gssapi.MaxSeverity)
-		for i := range printers {
-			printers[i] = &stdoutPrinter{}
-		}
-		opt.Printers = printers
-		fmt.Println("Printers:", len(opt.Printers))
+		dbgLogEnabled = true
 		delete(o, "gssdebug")
 	}
 	var err error
@@ -48,6 +45,7 @@ func (cn *conn) gss(o values) {
 }
 
 func (cn *conn) gssStartup(user string) {
+	dbglog("gssStartup:", user)
 	// check host
 	if len(cn.pghost) == 0 {
 		errorf("host name must be specified")
@@ -74,6 +72,7 @@ func (cn *conn) gssStartup(user string) {
 }
 
 func (cn *conn) gssContinue() {
+	dbglog("gssContinue")
 	//Init GSS context
 	var inbuf *gssapi.Buffer
 	if cn.gctx == cn.gsslib.GSS_C_NO_CONTEXT {
@@ -82,6 +81,7 @@ func (cn *conn) gssContinue() {
 		inbuf = cn.ginbuf
 	}
 	cred, actualMechs, _, err := cn.gsslib.AcquireCred(cn.guserName, gssapi.GSS_C_INDEFINITE, cn.gsslib.GSS_C_NO_OID_SET, gssapi.GSS_C_BOTH)
+	dbglog("cn.gsslib.AcquireCred:", cred, actualMechs, err)
 	actualMechs.Release()
 	if cred == nil {
 		cred = cn.gsslib.GSS_C_NO_CREDENTIAL
@@ -95,13 +95,14 @@ func (cn *conn) gssContinue() {
 		0,
 		cn.gsslib.GSS_C_NO_CHANNEL_BINDINGS,
 		inbuf)
-
+	dbglog("cn.gsslib.InitSecContext:", cn.gctx, cn.goutbuf, err)
 	if cn.gctx != cn.gsslib.GSS_C_NO_CONTEXT {
 		cn.ginbuf.Release()
 	}
 	cred.Release()
 
 	if cn.goutbuf.Length() != 0 {
+		dbglog("Send packet", cn.goutbuf)
 		// Send packet
 		w := cn.writeBuf('p')
 		w.kstring(cn.goutbuf.String())
@@ -114,7 +115,6 @@ func (cn *conn) gssContinue() {
 		if r.int32() != 0 {
 			errorf("unexpected authentication response: %q", t)
 		}
-
 	}
 
 	if err != nil {
