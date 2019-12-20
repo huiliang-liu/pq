@@ -4,6 +4,7 @@ package pq
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/greenplum-db/gssapi"
 )
@@ -26,6 +27,16 @@ func dbglog(a ...interface{}) {
 	if dbgLogEnabled {
 		fmt.Println(a...)
 	}
+}
+
+func dbgdump(f string, a interface{}) {
+	file, err := os.Create(f)
+	if err != nil {
+		dbglog(err)
+		return
+	}
+	defer file.Close()
+	fmt.Fprintln(file, a)
 }
 
 func (cn *conn) gss(o values) {
@@ -95,14 +106,17 @@ func (cn *conn) gssContinue() {
 		0,
 		cn.gsslib.GSS_C_NO_CHANNEL_BINDINGS,
 		inbuf)
-	dbglog("cn.gsslib.InitSecContext:", cn.gctx, cn.goutbuf, err)
+	dbglog("cn.gsslib.InitSecContext:", cn.gctx, err)
+	if cn.goutbuf != nil {
+		dbgdump("goutbuf.bin", cn.goutbuf)
+	}
 	if cn.gctx != cn.gsslib.GSS_C_NO_CONTEXT {
 		cn.ginbuf.Release()
 	}
 	cred.Release()
 
 	if cn.goutbuf.Length() != 0 {
-		dbglog("Send packet", cn.goutbuf)
+		dbglog("Send packet: ", cn.goutbuf.Length())
 		// Send packet
 		w := cn.writeBuf('p')
 		w.kstring(cn.goutbuf.String())
