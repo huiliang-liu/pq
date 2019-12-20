@@ -110,7 +110,7 @@ func (cn *conn) gssContinue() {
 	if cn.goutbuf != nil {
 		err = dbgdump("goutbuf.bin", cn.goutbuf)
 		if err == nil {
-			dbglog("cn.goutbuf dumped to goutbuf.bin")
+			dbglog("Content of cn.goutbuf is dumped to cn.goutbuf.bin")
 		} else {
 			dbglog(err)
 		}
