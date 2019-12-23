@@ -1103,7 +1103,7 @@ func (cn *conn) startup(o values) {
 
 	for {
 		t, r := cn.recv()
-		fmt.Println("conn.startup cn.auth", t)
+		fmt.Printf("conn.startup cn.auth %#U\n", rune(t))
 		switch t {
 		case 'K':
 			cn.processBackendKeyData(r)
