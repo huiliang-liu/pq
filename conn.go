@@ -294,7 +294,7 @@ func (c *Connector) open(ctx context.Context) (cn *conn, err error) {
 	// connection errors into ErrBadConns, hiding the real error message from
 	// the user.
 	defer errRecoverNoErrBadConn(&err)
-
+	fmt.Println("Connector.open")
 	o := c.opts
 
 	cn = &conn{
@@ -311,6 +311,7 @@ func (c *Connector) open(ctx context.Context) (cn *conn, err error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("Connector.open dial")
 
 	err = cn.ssl(o)
 	if err != nil {
@@ -326,8 +327,10 @@ func (c *Connector) open(ctx context.Context) (cn *conn, err error) {
 	}()
 
 	cn.gss(o)
+	fmt.Println("Connector.open cn.gss")
 	cn.buf = bufio.NewReader(cn.c)
 	cn.startup(o)
+	fmt.Println("Connector.open cn.startup")
 
 	// reset the deadline, in case one was set (see dial)
 	if timeout, ok := o["connect_timeout"]; ok && timeout != "0" {
@@ -1096,9 +1099,11 @@ func (cn *conn) startup(o values) {
 	if err := cn.sendStartupPacket(w); err != nil {
 		panic(err)
 	}
+	fmt.Println("conn.startup sendStartupPacket")
 
 	for {
 		t, r := cn.recv()
+		fmt.Println("conn.startup cn.auth", t)
 		switch t {
 		case 'K':
 			cn.processBackendKeyData(r)
