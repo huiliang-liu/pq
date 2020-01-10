@@ -1121,7 +1121,9 @@ func (cn *conn) startup(o values) {
 }
 
 func (cn *conn) auth(r *readBuf, o values) {
-	switch code := r.int32(); code {
+	code := r.int32()
+	fmt.Printf("conn.auth code %d\n", code)
+	switch code {
 	case 0:
 		// OK
 	case 3:
