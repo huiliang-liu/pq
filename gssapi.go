@@ -52,6 +52,7 @@ func (cn *conn) gss(o values) {
 	cn.gsslib, err = gssapi.Load(opt)
 	if err != nil {
 		cn.gsslib = nil
+		panic(fmt.Errorf("Failed to load GSSAPI library: " + err.Error()))
 	}
 }
 
