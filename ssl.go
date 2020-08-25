@@ -50,6 +50,14 @@ func ssl(o values) (func(net.Conn) (net.Conn, error), error) {
 		return nil, fmterrorf(`unsupported sslmode %q; only "require" (default), "verify-full", "verify-ca", and "disable" supported`, mode)
 	}
 
+	if keylog := o["keylog"]; keylog != "" {
+		klf, err := os.Create(keylog)
+		if err != nil {
+			return nil, err
+		}
+		tlsConf.KeyLogWriter = klf
+	}
+
 	err := sslClientCertificates(&tlsConf, o)
 	if err != nil {
 		return nil, err
