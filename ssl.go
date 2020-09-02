@@ -134,17 +134,30 @@ func sslCertificateAuthority(tlsConf *tls.Config, o values) error {
 	// In libpq, the root certificate is only loaded if the setting is not blank.
 	//
 	// https://github.com/postgres/postgres/blob/REL9_6_2/src/interfaces/libpq/fe-secure-openssl.c#L950-L951
-	if sslrootcert := o["sslrootcert"]; len(sslrootcert) > 0 {
-		tlsConf.RootCAs = x509.NewCertPool()
+	sslrootcert := o["sslrootcert"]
+	user, _ := user.Current()
+	if len(sslrootcert) == 0 && user != nil {
+		sslrootcert = filepath.Join(user.HomeDir, ".postgresql", "root.crt")
+	}
+	if len(sslrootcert) == 0 {
+		return nil
+	}
 
-		cert, err := ioutil.ReadFile(sslrootcert)
-		if err != nil {
-			return err
-		}
+	if _, err := os.Stat(sslrootcert); os.IsNotExist(err) {
+		return nil
+	} else if err != nil {
+		return err
+	}
 
-		if !tlsConf.RootCAs.AppendCertsFromPEM(cert) {
-			return fmterrorf("couldn't parse pem in sslrootcert")
-		}
+	tlsConf.RootCAs = x509.NewCertPool()
+
+	cert, err := ioutil.ReadFile(sslrootcert)
+	if err != nil {
+		return err
+	}
+
+	if !tlsConf.RootCAs.AppendCertsFromPEM(cert) {
+		return fmterrorf("couldn't parse pem in sslrootcert")
 	}
 
 	return nil
