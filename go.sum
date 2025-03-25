@@ -1,2 +1,2 @@
-github.com/greenplum-db/gssapi v0.0.0-20190813081833-14bfdd606422 h1:FIqqCIYFpyPjVnhohR2WZERyZAFLmk4Sk/iK59QjuMQ=
-github.com/greenplum-db/gssapi v0.0.0-20190813081833-14bfdd606422/go.mod h1:OHM1jDPSLoqBMJ/j4OyKDqt8dv0sOqWYVZbAfKz47qM=
+github.com/greenplum-db/gssapi v0.0.0-20230830201624-b756af773d92 h1:u4MmW5yTnBmnrH8BKQ6evIqpwIcOy6vWxO9E6RwthzA=
+github.com/greenplum-db/gssapi v0.0.0-20230830201624-b756af773d92/go.mod h1:OHM1jDPSLoqBMJ/j4OyKDqt8dv0sOqWYVZbAfKz47qM=
