@@ -1,4 +1,4 @@
-module github.com/greenplum-db/pq
+module github.com/huiliang-liu/pq
 
 go 1.12
 
